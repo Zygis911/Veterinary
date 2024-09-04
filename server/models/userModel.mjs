@@ -41,3 +41,5 @@ const userModel = {
 
     // searchUsername.. ?
 };
+
+export default userModel;
