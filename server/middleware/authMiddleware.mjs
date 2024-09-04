@@ -21,8 +21,17 @@ export default async function AuthMiddleware(req, res, next) {
             return res.status(401).json('Unauthorized access');
         }
 
-        // user model await
-    } catch (error) {
-        
-    }
-}
+        // check if the user is valid 
+
+        const user = await userModel.getUserById(payload.user.id);
+        if (!user) {
+            throw new Error("user no longer exists");
+        }
+
+        // Providing user for the next in the pipeline
+        req.user = user;
+        next();
+    } catch (err) {
+        return res.status(401).json("unauthorized access")
+    };
+};
