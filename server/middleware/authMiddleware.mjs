@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import {V4 as paseto} from 'paseto'
 import 'dotenv/config';
 import userModel from '../models/userModel.mjs';
 
@@ -16,7 +16,7 @@ export default async function AuthMiddleware(req, res, next) {
         }
 
          // Checking if the token is valid
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        const payload = await paseto.verify(token, process.env.JWT_SECRET);
         if (!payload) {
             return res.status(401).json('Unauthorized access');
         }

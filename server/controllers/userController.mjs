@@ -1,5 +1,6 @@
 import argon2 from "argon2";
-import jwt from "jsonwebtoken";
+import {V4 as paseto} from 'paseto';
+
 
 // import validation
 
@@ -68,8 +69,8 @@ const userController = {
       // deleting password field from user object
       delete user.password
 
-      //generating token
-      const token = jwt.sign({user}, process.env.JWT_SECRET, {
+      //generating PASETO token
+      const token =  await paseto.sign({user}, process.env.JWT_SECRET, {
         expiresIn: "2h",
       });
 
@@ -98,3 +99,5 @@ const userController = {
 
 //search username bus
 };
+
+export default userController;
