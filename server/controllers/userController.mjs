@@ -1,5 +1,6 @@
 import argon2 from "argon2";
 import {V4 as paseto} from 'paseto';
+import { validationResult } from "express-validator";
 
 
 // import validation
