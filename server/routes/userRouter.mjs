@@ -1,5 +1,6 @@
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
+import { registrationValidationSchema, loginValidationSchema, searchUsernameValidationSchema } from '../validators/userValidator.mjs';
 
 // validations
 
@@ -11,7 +12,7 @@ dotenv.config();
 
 const router = express.Router();
 
-router.post('/register', userController.createUser);
+router.post('/register', registrationValidationSchema, userController.createUser);
 
 
 
