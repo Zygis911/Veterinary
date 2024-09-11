@@ -1,11 +1,16 @@
 import argon2 from "argon2";
 import {V4 as paseto} from 'paseto';
 import { validationResult } from "express-validator";
+import { promises as fs } from 'fs';
+import { createPrivateKey } from 'crypto';
+import path from 'path';
 
 
 // import validation
 
 import userModel from "../models/userModel.mjs";
+
+
 
 const userController = {
   createUser: async (req, res, next) => {
@@ -37,48 +42,63 @@ const userController = {
     }
   },
 
-   login: async (req, res, next) => {
+  login: async (req, res, next) => {
     try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
 
-        const { username, password } = req.body;
+      const { username, password } = req.body;
+      const user = await userModel.login(username);
 
-        // Getting user from given email or username
-        const user = await userModel.login(username);
-        if (!user) {
-            return res.status(400).json({
-                errors: [
-                    {
-                        path: "username",
-                        msg: "user with the given email/username does not exist",
-                    },
-                ],
-            });
-        }
+      if (!user) {
+        return res.status(400).json({
+          errors: [
+            {
+              path: "username",
+              msg: "user with the given email/username does not exist",
+            },
+          ],
+        });
+      }
 
-        // Check if passwords match
-        const passwords_match = await argon2.verify(user.password, password);
-        if (!passwords_match) {
-            return res
-                .status(400)
-                .json({ errors: [{ path: "password", msg: "incorrect password" }] });
-        }
+      // Check if passwords match
+      const passwordsMatch = await argon2.verify(user.password, password);
+      if (!passwordsMatch) {
+        return res.status(400).json({
+          errors: [{ path: "password", msg: "incorrect password" }],
+        });
+      }
 
-        // Deleting password field from user object
-        delete user.password;
+      // Remove sensitive information
+      delete user.password;
 
-        // Ensure key is in the correct format (32 bytes)
-        const key = Buffer.from(process.env.JWT_SECRET, 'base64');
+      // Load the private key from the file
+      const privateKeyPem = await fs.readFile(process.env.JWT_PRIVATE_KEY_PATH, 'utf8');
+      const privateKey = createPrivateKey({
+        key: privateKeyPem,
+        format: 'pem',
+        type: 'pkcs8',
+      });
 
-        // Generating PASETO token
-        const token = await paseto.sign({ user }, key, { expiresIn: "2h" });
+      // Generate a unique PASETO token, including a timestamp and expiry time
+      const tokenPayload = {
+        user, // This will include the user data in the token
+        iat: Math.floor(Date.now() / 1000), // Issued at timestamp
+        exp: Math.floor(Date.now() / 1000) + (60 * 60 * 2), // Expiry timestamp (2 hours)
+      };
 
-        res.status(200).json({ message: "user logged in successfully", token });
+      // Sign the token with the private key
+      const token = await paseto.sign(tokenPayload, privateKey);
+
+      // Send the token back to the client
+      res.status(200).json({
+        message: "user logged in successfully",
+        token,
+      });
     } catch (error) {
-        next(error);
+      next(error);
     }
   },
 
@@ -98,6 +118,7 @@ const userController = {
         next(error);
     }
   },
+  
 
 //search username bus
 };
