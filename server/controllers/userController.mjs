@@ -37,45 +37,46 @@ const userController = {
     }
   },
 
-  login: async (req, res, next) => {
+   login: async (req, res, next) => {
     try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
 
-      const { login, password } = req.body;
+        const { username, password } = req.body;
 
-      // getting user from given email or username
-      const user = await userModel.login(login);
-      if (!user) {
-        return res.status(400).json({
-          errors: [
-            {
-              path: "login",
-              msg: "user with the given email/username does not exist",
-            },
-          ],
-        });
-      }
+        // Getting user from given email or username
+        const user = await userModel.login(username);
+        if (!user) {
+            return res.status(400).json({
+                errors: [
+                    {
+                        path: "username",
+                        msg: "user with the given email/username does not exist",
+                    },
+                ],
+            });
+        }
 
-      // check if passwords match
-      const passwords_match = await argon2.verify(user.password, password);
-      if (!passwords_match) {
-        return res
-          .status(400)
-          .json({ errors: [{ path: "password", msg: "incorrect password" }] });
-      }
+        // Check if passwords match
+        const passwords_match = await argon2.verify(user.password, password);
+        if (!passwords_match) {
+            return res
+                .status(400)
+                .json({ errors: [{ path: "password", msg: "incorrect password" }] });
+        }
 
-      // deleting password field from user object
-      delete user.password
+        // Deleting password field from user object
+        delete user.password;
 
-      //generating PASETO token
-      const token =  await paseto.sign({user}, process.env.JWT_SECRET, {
-        expiresIn: "2h",
-      });
+        // Ensure key is in the correct format (32 bytes)
+        const key = Buffer.from(process.env.JWT_SECRET, 'base64');
 
-      res.status(200).json({message: "user logged in successfully", token})
+        // Generating PASETO token
+        const token = await paseto.sign({ user }, key, { expiresIn: "2h" });
+
+        res.status(200).json({ message: "user logged in successfully", token });
     } catch (error) {
         next(error);
     }

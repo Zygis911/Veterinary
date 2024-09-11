@@ -76,7 +76,7 @@ export const registrationValidationSchema = checkSchema({
 
 export const loginValidationSchema = [
   checkSchema({
-    login: {
+    username: {
       notEmpty: {
         errorMessage: "Login cannot be empty",
       },

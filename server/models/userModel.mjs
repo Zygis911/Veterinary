@@ -33,11 +33,12 @@ const userModel = {
         return result.rows[0];
     },
 
-    login: async(login) => {
+    login: async (login) => {
+        console.log('Searching for user with login:', login);
         const result = await pool.query('SELECT * FROM users WHERE username = $1 OR email = $2', [login, login]);
-
+        console.log('Query result:', result.rows);
         return result.rows[0];
-    },
+    }
 
     // searchUsername.. ?
 };
