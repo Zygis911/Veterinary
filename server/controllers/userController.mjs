@@ -3,7 +3,7 @@ import {V4 as paseto} from 'paseto';
 import { validationResult } from "express-validator";
 import { promises as fs } from 'fs';
 import { createPrivateKey } from 'crypto';
-import path from 'path';
+
 
 
 // import validation

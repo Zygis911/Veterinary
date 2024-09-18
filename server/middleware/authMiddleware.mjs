@@ -16,7 +16,7 @@ export default async function AuthMiddleware(req, res, next) {
         }
 
          // Checking if the token is valid
-        const payload = await paseto.verify(token, process.env.JWT_SECRET);
+        const payload = await paseto.verify(token, process.env.JWT_PRIVATE_KEY_PATH);
         if (!payload) {
             return res.status(401).json('Unauthorized access');
         }
