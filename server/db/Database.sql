@@ -31,7 +31,7 @@ CREATE TABLE staff (
     email VARCHAR(255) NOT NULL UNIQUE,
     registered_on DATE NOT NULL
 );
-
+-- staff should be able to administer treatments
 CREATE TABLE appointments (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
