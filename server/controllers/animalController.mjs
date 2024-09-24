@@ -20,6 +20,10 @@ const animalController = {
         date_of_birth
       );
       res.status(201).json(registeredAnimal);
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   },
 };
+
+export default animalController;

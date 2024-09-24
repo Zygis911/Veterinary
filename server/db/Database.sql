@@ -5,7 +5,7 @@ CREATE TABLE users (
     username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
-    role ROLE NOT NULL DEFAULT 'customer',
+    role ROLE NOT NULL DEFAULT 'customer', -- user , super_user
     registered_on DATE NOT NULL
 );
 
@@ -46,3 +46,14 @@ CREATE TABLE treatments (
     status TREATMENT_STATUS NOT NULL DEFAULT 'pending',
     CONSTRAINT fk_appointments FOREIGN KEY (appointment_id) REFERENCES appointments(id)
 );
+
+-- update 2024 09 24
+CREATE TYPE user_role AS ENUM ('user', 'super_user');
+
+ALTER TABLE users
+ALTER COLUMN role TYPE VARCHAR(255);
+
+UPDATE users SET role = 'user' WHERE role = 'customer';
+
+ALTER TABLE users
+ALTER COLUMN role SET DEFAULT 'user';
