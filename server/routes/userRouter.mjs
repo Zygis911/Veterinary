@@ -16,7 +16,7 @@ router.post('/register', registrationValidationSchema, userController.createUser
 
 router.post('/login', loginValidationSchema, userController.login);
 
-router.post('/:id', userController.getUserById);
+router.get('/:id', userController.getUserById);
 
 
 
