@@ -40,8 +40,21 @@ const appointmentController = {
 
       return res.status(200).json(appointment);
     } catch (error) {
-        next(error);
+      next(error);
     }
+  },
+
+  deleteAppointment: async (req, res, next) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "unauthorized access" });
+      }
+      const id = req.params.id;
+
+      //retrieve appointment by id 
+      const appointments = await appointmentModel.getAppointmentById(id);
+      return a
+    } catch (error) {}
   },
 };
 
