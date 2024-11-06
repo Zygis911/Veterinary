@@ -53,7 +53,7 @@ const appointmentController = {
 
       //retrieve appointment by id 
       const appointments = await appointmentModel.getAppointmentById(id);
-      return a
+      return appointments;
     } catch (error) {}
   },
 };
