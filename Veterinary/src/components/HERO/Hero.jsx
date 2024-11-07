@@ -6,8 +6,8 @@ export function Hero() {
     return (
        <div className="hero">
             <div className="content">
-                <h1>Find the perfecto</h1>
-                <p className="search-text">Search for something, fix</p>
+                <h1>Veterinary services</h1>
+                <p className="search-text">Search for animals</p>
                 <form className="search">
                     <div>
                         <input type="text" placeholder="Enter Keyword.." />
