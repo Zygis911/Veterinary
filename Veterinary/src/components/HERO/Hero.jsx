@@ -14,9 +14,9 @@ export function Hero() {
                     </div>
                     <div className="radio">
                         <input type="radio" checked />
-                        <label>Buy</label>
+                        <label>Book</label>
                         <input type="radio"/>
-                        <label>Test</label>
+                        <label>Search</label>
                         <button type='submit'><AiOutlineSearch className='icon' /> </button>
                     </div>
                 </form>
