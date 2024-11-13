@@ -4,6 +4,7 @@ import { Navbar } from "./components/NAVBAR/Navbar";
 import { Hero } from "./components/HERO/Hero";
 import { Best } from "./components/best/Best";
 import { Featured } from "./components/FEATURED/Featured";
+import { Footer } from "./components/FOOTER/Footer";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Hero />
       <Best />
       <Featured />
+      <Footer />
     </>
   );
 }
